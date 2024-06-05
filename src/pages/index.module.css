@@ -11,8 +11,8 @@
 .board {
   display: flex;
   flex-wrap: wrap;
-  width: 640px;
-  height: 640px;
+  width: 240px;
+  height: 240px;
   background-color: rgb(220 220 220);
 }
 
@@ -20,23 +20,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
-  height: 80px;
+  width: 30px;
+  height: 30px;
   border: 0.5px solid black;
 }
 
 .stone {
   display: flex;
-  width: 55px;
-  height: 55px;
+  width: 20px;
+  height: 20px;
   background-color: white;
   border-radius: 100%;
 }
 
 .circle {
   display: flex;
-  width: 20px;
-  height: 20px;
+  width: 10px;
+  height: 10px;
   background-color: rgb(0 200 200 / 100%);
   border-radius: 100%;
 }
@@ -46,10 +46,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 635px;
-  height: 100px;
-  padding: 0 0.5rem;
-  font-size: 20px;
+  width: 240px;
+  height: 50px;
+
+  /* padding: 0 0.5rem; */
+  font-size: 10px;
 
   /* background-color: rgb(180 180 180); */
 }
