@@ -36,8 +36,7 @@ const reversePlace = (x: number, y: number, board: number[][], turnColor: number
   return board;
 };
 
-const getPutPlace = (board: number[][], turnColor: number, passCount: number) => {
-  let candidatecount = 0;
+const getPutPlace = (board: number[][], turnColor: number) => {
   for (let c = 0; c <= 7; c++) {
     for (let d = 0; d <= 7; d++) {
       if (board[d][c] === 0 || board[d][c] === 3) {
@@ -46,13 +45,12 @@ const getPutPlace = (board: number[][], turnColor: number, passCount: number) =>
           for (let a: number = 1; a <= 6; a++) {
             if (
               board[d + direction[1] * a] !== undefined &&
-              board[d + direction[1] * a][c + direction[0] * a] === turnColor
+              board[d + direction[1] * a][c + direction[0] * a] === 3 - turnColor
             ) {
               if (
                 board[d + direction[1] * (a + 1)] !== undefined &&
-                board[d + direction[1] * (a + 1)][c + direction[0] * (a + 1)] === 3 - turnColor
+                board[d + direction[1] * (a + 1)][c + direction[0] * (a + 1)] === turnColor
               ) {
-                candidatecount++;
                 board[d][c] = 3;
               }
             } else {
@@ -62,10 +60,6 @@ const getPutPlace = (board: number[][], turnColor: number, passCount: number) =>
         }
       }
     }
-  }
-  if (candidatecount === 0 && passCount <= 2) {
-    getPutPlace(board, 3 - turnColor, 1 + passCount);
-    console.log('AA', passCount);
   }
   return board;
 };
@@ -91,16 +85,25 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const passCount = 0;
+  const newBoard = structuredClone(board);
   const clickHandler = (x: number, y: number) => {
     if (board[y][x] === 3) {
-      const newBoard = structuredClone(board);
       const reversed = reversePlace(x, y, newBoard, turnColor);
-      const getPutted = getPutPlace(reversed, turnColor, passCount);
-      if (passCount === 0) {
-        setTurnColor(3 - turnColor);
-      }
+      const getPutted = getPutPlace(reversed, 3 - turnColor);
+      setTurnColor(3 - turnColor);
       setBoard(getPutted);
+      if (getPutted.flat().filter((cell) => cell === 3).length === 0) {
+        const newGetPutted = getPutPlace(getPutted, turnColor);
+        setTurnColor(turnColor);
+        console.log('AAA', turnColor);
+        setBoard(newGetPutted);
+        if (newGetPutted.flat().filter((cell) => cell === 3).length === 0) {
+          console.log('BBB');
+          const newNewGetPutted = getPutPlace(newGetPutted, 3 - turnColor);
+          setTurnColor(3 - turnColor);
+          setBoard(newNewGetPutted);
+        }
+      }
     }
   };
 
