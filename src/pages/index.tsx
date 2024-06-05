@@ -115,12 +115,8 @@ const Home = () => {
           : turnColor === 1
             ? '黒'
             : '白'}
-        <div className={styles.textBold}>
-          siro:{board.flat().filter((cell) => cell === 2).length}
-        </div>
-        <div className={styles.textBold}>
-          kuro:{board.flat().filter((cell) => cell === 1).length}
-        </div>
+        <div>siro:{board.flat().filter((cell) => cell === 2).length}</div>
+        <div>kuro:{board.flat().filter((cell) => cell === 1).length}</div>
       </div>
       <div className={styles.board}>
         {board.map((row, y) =>
