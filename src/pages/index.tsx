@@ -1,126 +1,54 @@
 import { useState } from 'react';
 import styles from './index.module.css';
 
-const directions = [
-  [0, 1],
-  [1, 1],
-  [1, 0],
-  [1, -1],
-  [0, -1],
-  [-1, -1],
-  [-1, 0],
-  [-1, 1],
-];
-
-const reversePlace = (x: number, y: number, board: number[][], turnColor: number) => {
-  board[y][x] = turnColor;
-  for (const direction of directions) {
-    for (let a: number = 1; a <= 6; a++) {
-      if (
-        board[y + direction[1] * a] !== undefined &&
-        board[y + direction[1] * a][x + direction[0] * a] === 3 - turnColor
-      ) {
-        if (
-          board[y + direction[1] * (a + 1)] !== undefined &&
-          board[y + direction[1] * (a + 1)][x + direction[0] * (a + 1)] === turnColor
-        ) {
-          for (let b: number = 1; b <= a; b++) {
-            board[y + direction[1] * b][x + direction[0] * b] = turnColor;
-          }
-        }
-      } else {
-        break;
-      }
+const finsh = (board: number[][], turnColor: number) => {
+  for (let x = 0; x < 3; x++) {
+    if (board[x][0] === turnColor && board[x][1] === turnColor && board[x][2] === turnColor) {
+      return true;
     }
   }
-  return board;
-};
-
-const getPutPlace = (board: number[][], turnColor: number) => {
-  for (let c = 0; c <= 7; c++) {
-    for (let d = 0; d <= 7; d++) {
-      if (board[d][c] === 0 || board[d][c] === 3) {
-        board[d][c] = 0;
-        for (const direction of directions) {
-          for (let a: number = 1; a <= 6; a++) {
-            if (
-              board[d + direction[1] * a] !== undefined &&
-              board[d + direction[1] * a][c + direction[0] * a] === 3 - turnColor
-            ) {
-              if (
-                board[d + direction[1] * (a + 1)] !== undefined &&
-                board[d + direction[1] * (a + 1)][c + direction[0] * (a + 1)] === turnColor
-              ) {
-                board[d][c] = 3;
-              }
-            } else {
-              break;
-            }
-          }
-        }
-      }
+  for (let y = 0; y < 3; y++) {
+    if (board[0][y] === turnColor && board[1][y] === turnColor && board[2][y] === turnColor) {
+      return true;
     }
   }
-  return board;
+  if (board[0][0] === turnColor && board[1][1] === turnColor && board[2][2] === turnColor) {
+    return true;
+  }
+  if (board[2][0] === turnColor && board[1][1] === turnColor && board[0][2] === turnColor) {
+    return true;
+  }
+  return false;
 };
 
 const Home = () => {
-  const [turnColor, setTurnColor] = useState(1);
+  const [turncolor, setTurncolor] = useState(1);
   const [board, setBoard] = useState([
-    // [0, 0, 0, 0, 0, 3, 2, 1],
-    // [0, 0, 0, 0, 0, 0, 0, 0],
-    // [0, 0, 0, 0, 0, 3, 2, 1],
-    // [0, 0, 0, 0, 0, 0, 0, 0],
-    // [0, 0, 0, 0, 0, 3, 2, 1],
-    // [0, 0, 0, 0, 0, 0, 0, 0],
-    // [0, 0, 0, 0, 0, 3, 2, 1],
-    // [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 3, 0, 0, 0, 0],
-    [0, 0, 3, 2, 1, 0, 0, 0],
-    [0, 0, 0, 1, 2, 3, 0, 0],
-    [0, 0, 0, 0, 3, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
   ]);
 
-  const newBoard = structuredClone(board);
   const clickHandler = (x: number, y: number) => {
-    if (board[y][x] === 3) {
-      const reversed = reversePlace(x, y, newBoard, turnColor);
-      const getPutted = getPutPlace(reversed, 3 - turnColor);
-      setTurnColor(3 - turnColor);
-      setBoard(getPutted);
-      if (getPutted.flat().filter((cell) => cell === 3).length === 0) {
-        const newGetPutted = getPutPlace(getPutted, turnColor);
-        setTurnColor(turnColor);
-        console.log('AAA', turnColor);
-        setBoard(newGetPutted);
-        if (newGetPutted.flat().filter((cell) => cell === 3).length === 0) {
-          console.log('BBB');
-          const newNewGetPutted = getPutPlace(newGetPutted, 3 - turnColor);
-          setTurnColor(3 - turnColor);
-          setBoard(newNewGetPutted);
-        }
-      }
+    const newboard = structuredClone(board);
+    if (turncolor === 1 && board[y][x] === 0) {
+      newboard[y][x] = 1;
     }
+    if (turncolor === 2 && board[y][x] === 0) {
+      newboard[y][x] = 2;
+    }
+    if (finsh(newboard, turncolor) === true) {
+      alert('終わり');
+    }
+    setBoard(newboard);
+    setTurncolor(3 - turncolor);
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.setcontainer}>
-        {board.flat().filter((cell) => cell === 3).length === 0
-          ? 'サ終'
-          : turnColor === 1
-            ? '黒'
-            : '白'}
-        <div>siro:{board.flat().filter((cell) => cell === 2).length}</div>
-        <div>kuro:{board.flat().filter((cell) => cell === 1).length}</div>
-      </div>
       <div className={styles.board}>
         {board.map((row, y) =>
-          row.map((color, x) => (
+          row.map((cell, x) => (
             <div
               className={styles.cell}
               key={`${x}-${y}`}
@@ -128,15 +56,8 @@ const Home = () => {
                 clickHandler(x, y);
               }}
             >
-              {color !== 0 && color !== 3 && (
-                <div
-                  className={styles.stone}
-                  style={{ background: color === 1 ? '#000' : '#ffff' }}
-                />
-              )}
-              {color === 3 && (
-                <div className={styles.circle} style={{ background: '#rgb(0 200 200)' }} />
-              )}
+              {cell === 1 && <div>x</div>}
+              {cell === 2 && <div>o</div>}
             </div>
           )),
         )}
