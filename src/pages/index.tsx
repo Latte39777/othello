@@ -37,11 +37,11 @@ const Home = () => {
     if (turncolor === 2 && board[y][x] === 0) {
       newboard[y][x] = 2;
     }
-    if (finsh(newboard, turncolor) === true) {
-      alert('終わり');
-    }
     setBoard(newboard);
     setTurncolor(3 - turncolor);
+    if (finsh(board, turncolor) === true) {
+      alert('終わり');
+    }
   };
 
   return (
